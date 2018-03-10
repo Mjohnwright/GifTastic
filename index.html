@@ -1,51 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <title>Matthew Wright - GifTastic</title>
-
+  <meta charset="utf-8">
+  <title>Stop: It's Giphy time</title>
+  <!-- Added link to the jQuery Library -->
 
 </head>
 
+
 <body>
-  <img src="https://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-still="https://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-animate="https://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200.gif" data-state="still" class="gif">
-  <img src="https://media2.giphy.com/media/8rFQp4kHXJ0gU/200_s.gif" data-still="https://media2.giphy.com/media/8rFQp4kHXJ0gU/200_s.gif" data-animate="https://media2.giphy.com/media/8rFQp4kHXJ0gU/200.gif" data-state="still" class="gif">
-  <img src="https://media3.giphy.com/media/W6LbnBigDe4ZG/200_s.gif" data-still="https://media3.giphy.com/media/W6LbnBigDe4ZG/200_s.gif" data-animate="https://media3.giphy.com/media/W6LbnBigDe4ZG/200.gif" data-state="still" class="gif">
+  <div id="cityArray">
+
+  </div>
+
+
+  <form id="city-form">
+    <lablel for="city" input="text">Add a city</lablel>
+    <input type="text" id="city-input"></input>
+
+    <input id="addCity" type="submit" value="submit">
+    </br>
+  </form>
+
+
+  <div id="city">
+
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- JAVASCRIPT -->
   <script type="text/javascript">
-    $(".gif").on("click", function() {
-      // STEP ONE: study the html above.
-      // Look at all the data attributes.
-      // Run the file in the browser. Look at the images.
+    
+    // City Array
+    var cityGiphy = ["London", "Mexico City", "Quebec", "Copenhagen", "Prague", "Cairo",
+      "Constantinople", "Tokyo", "Budapest", "Reykjavik", "Tehran", "Seoul", "Berlin"
+    ];
+    // Not sure if I need this
+    var cityDiv = $("<div>");
 
-      // After we complete steps 1 and 2 we'll be able to pause gifs from giphy.
+    // For each city in the array, creating a button
+    $.each(cityGiphy, function (i, val) {
+    
+      var cityButton = $("<button>" + val + "</button>");
 
-      // STEP TWO: make a variable named state and then store the image's data-state into it.
-      // Use the .attr() method for this.
 
-      // ============== FILL IN CODE HERE FOR STEP TWO =========================
+    // Writing the button name on the DOM
+      $("#cityArray").append(cityButton);
+      console.log(val);
+    })
 
-      // CODE GOES HERE
+    // When user clicks a button it launches runGiphy function
+    $("button").on("click", function () {
+      var buttonValue = $(this).html();
+      console.log(buttonValue);
 
-      // =============================================
 
-      // STEP THREE: Check if the variable state is equal to 'still',
-      // then update the src attribute of this image to it's data-animate value,
-      // and update the data-state attribute to 'animate'.
+    
 
-      // If state is equal to 'animate', then update the src attribute of this
-      // image to it's data-still value and update the data-state attribute to 'still'
-      // ============== FILL IN CODE HERE FOR STEP THREE =========================
 
-      // CODE GOES HERE
+    // FUNCTION runGiphy
+    function runGiphy() {
 
-      // ==============================================
+    // query set to search for CITY + API key + limit to 10 responses
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+      buttonValue + "&api_key=5buFvdZ3WSNHFzbFytMWBbjytoPx7bbD&limit=10";
 
-      // STEP FOUR: open the file in the browser and click on the images.
-      // Then click again to pause.
-    });
+      // Launch the API query using the URL from above
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        //Promise from the Giphy
+        .then(function (response) {
+
+          //creating a variable from the API response
+          var results = response.data;
+
+          // Looping through each result item (REQUESTED 10 ITEMS)
+          for (var i = 0; i < results.length; i++) {
+
+            // Creating a paragraph tag with the result item's rating
+            var p = $("<p>").text("Rating: " + results[i].rating);
+
+            // Creating and storing an image tag
+            var cityImage = $("<img>");
+            // Setting the src attribute of the image to a property pulled off the result item
+            cityImage.attr("src", results[i].images.fixed_height.url);
+
+            // Appending the paragraph and image tag to the cityDiv
+            cityDiv.append(p);
+            cityDiv.append(cityImage);
+
+            // Prependng the cityDiv to the HTML page in the "#city" div
+            $("#city").prepend(cityDiv);
+          }
+
+        })
+
+    }
+    
+    runGiphy();
+        })
+        
+  
   </script>
 </body>
 
 </html>
+
+
+<!-- API key for Giphy: 5buFvdZ3WSNHFzbFytMWBbjytoPx7bbD -->
+<!-- //  .val() is used to get value from an input -->

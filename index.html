@@ -13,7 +13,7 @@
 
 
   <form id="city-form">
-    <lablel for="city" input="text">Add a city</lablel>
+    <label for="city" input="text">Add a city</label>
     <input type="text" id="city-input"></input>
 
     <input id="addCity" type="submit" value="submit">
@@ -29,40 +29,41 @@
 
   <!-- JAVASCRIPT -->
   <script type="text/javascript">
-    
     // City Array
     var cityGiphy = ["London", "Mexico City", "Quebec", "Copenhagen", "Prague", "Cairo",
       "Constantinople", "Tokyo", "Budapest", "Reykjavik", "Tehran", "Seoul", "Berlin"
     ];
     // Not sure if I need this
-    var cityDiv = $("<div>");
+    var results;
 
     // For each city in the array, creating a button
     $.each(cityGiphy, function (i, val) {
-    
+
       var cityButton = $("<button>" + val + "</button>");
 
 
-    // Writing the button name on the DOM
+      // Writing the button name on the DOM
       $("#cityArray").append(cityButton);
       console.log(val);
     })
 
     // When user clicks a button it launches runGiphy function
-    $("button").on("click", function () {
+    $(document).on("click", "button", function () {
+      // var buttonValue = $(this).html();
       var buttonValue = $(this).html();
+
       console.log(buttonValue);
+      runGiphy(buttonValue);
 
-
-    
+    })
 
 
     // FUNCTION runGiphy
-    function runGiphy() {
+    function runGiphy(buttonValue) {
 
-    // query set to search for CITY + API key + limit to 10 responses
+      // query set to search for CITY + API key + limit to 10 responses
       var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-      buttonValue + "&api_key=5buFvdZ3WSNHFzbFytMWBbjytoPx7bbD&limit=10";
+        buttonValue + "&api_key=5buFvdZ3WSNHFzbFytMWBbjytoPx7bbD&limit=10";
 
       // Launch the API query using the URL from above
       $.ajax({
@@ -71,12 +72,13 @@
         })
         //Promise from the Giphy
         .then(function (response) {
-
+          console.log(response);
           //creating a variable from the API response
-          var results = response.data;
+          results = response.data;
 
           // Looping through each result item (REQUESTED 10 ITEMS)
           for (var i = 0; i < results.length; i++) {
+            var cityDiv = $("<div>");
 
             // Creating a paragraph tag with the result item's rating
             var p = $("<p>").text("Rating: " + results[i].rating);
@@ -89,6 +91,7 @@
             // Appending the paragraph and image tag to the cityDiv
             cityDiv.append(p);
             cityDiv.append(cityImage);
+            console.log(cityDiv);
 
             // Prependng the cityDiv to the HTML page in the "#city" div
             $("#city").prepend(cityDiv);
@@ -97,11 +100,37 @@
         })
 
     }
-    
-    runGiphy();
-        })
-        
+
+
+    //  Using submit button to add the the cityArray
+    $("#addCity[type='submit']").on("click", function (event) {
+
+      event.preventDefault();
+      
+      console.log("hello");
+
+      // document.forms["myForm"].reset();
+      // document.getElementById("input[type='text']").reset();
+      // document.getElementById("input").reset();
+      // $("#city-input").resetForm()
+
+      var newCity = $("input[type='text']").val();
+      var but = 
+      console.log(newCity);
+
+
+        $("#cityArray").append("<button>" + newCity + "</button>");
+
+      ///FUNCTION CALL FOR ADDING THE TO THE DOM ARRAY
+      // $("#addCity").reset();
+      
+      $("#addcity[type='text']").val("");
   
+
+    })
+
+      
+    
   </script>
 </body>
 

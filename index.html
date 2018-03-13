@@ -1,8 +1,29 @@
 <head>
   <meta charset="utf-8">
-  <title>Stop: It's Giphy time</title>
+  <title>GiphyTastic - Matthew Wright</title>
+
+          <!-- Latest compiled and minified CSS -->
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+
+      <!-- Optional theme -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
   <!-- Added link to the jQuery Library -->
 
+  <style>
+  
+  #addCity[type='submit'], label, p{
+    COLOR: blue;
+
+  }
+
+  body {
+    margin-left: 10px;
+  }
+  
+  </style>
 </head>
 
 
@@ -12,8 +33,9 @@
   </div>
 
   <br>
+
   <form id="city-form">
-    <label for="city" input="text">Add a city</label>
+    <label for="city-form" input="text">Add a city</label>
     <input type="text" id="city-input"></input>
 
     <input id="addCity" type="submit" value="submit">
@@ -30,69 +52,53 @@
   <!-- JAVASCRIPT -->
   <script type="text/javascript">
     /* *******************************
-                            VARIABLES               
-                    ********************************* */
-
+                           VARIABLES              
+        **********************************/
 
     // City Array
-    var cityGiphy = ["London", "Mexico City", "Quebec", "Copenhagen", "Prague", "Cairo",
+    var cityGiphyArray = ["London", "Mexico City", "Quebec", "Copenhagen", "Prague", "Cairo",
       "Constantinople", "Tokyo", "Budapest", "Reykjavik", "Tehran", "Seoul", "Berlin"
     ];
-    // Not sure if I need this
-    var results;
-
-    // For each city in the array, creating a button
-    $.each(cityGiphy, function (i, val) {
-
-      var cityButton = $("<button>" + val + "</button>");
 
 
-      // Writing the button name on the DOM
-      $("#cityArray").append(cityButton);
-    })
-
-    //SEARCH BUTTON FUNCTIONALITY****************************************************************
-    //  Using submit button to add the the cityArray
-    $("#addCity[type='submit']").on("click", function (event) {
-
-      event.preventDefault();
 
 
-      // document.forms["myForm"].reset();
-      // document.getElementById("input[type='text']").reset();
-      // document.getElementById("input").reset();
-      // $("#city-input").resetForm()
+    /******************************
+              CLICK EVENTS
+    ****************************/
 
-      var newCity = $("input[type='text']").val().trim();
-
-      $("#cityArray").append("<button>" + newCity + "</button>");
-      $("#addcity[type='text']").val("");
-
-
-    })
-
-    // ARRAY FUNCTIONALITY**********************************************************************
+    // LOADS THE 10 GIFS INTO THE DOM
     // When user clicks a button on the array it launches runGiphy function
-    $(document).on("click", "button", function () {
-      // var buttonValue = $(this).html();
-      var buttonValue = $(this).html();
+    $(document).on("click", "button", runGiphy);
+    console.log("1click the array")
 
-      console.log(buttonValue);
-      runGiphy(buttonValue);
+    //ANIMATE THE GIF with click EVENT
+    //Launches the animateGiphy function
+    $(document).on("click", "img", animateCityGif);
+    console.log("2click on giphy to animate")
 
-    })
+
+    //ADD a CITY BUTTON FUNCTIONALITY***
+    //  Using submit button to add the the cityArray
+    $("#addCity[type='submit']").on("click", addAGif);
+    console.log("3add a city")
+
+    //***************************************************
+
+
+
+
 
     /* *******************************
              FUNCTIONS               
      ********************************* */
-
-
+    // POPULATES THE DIV WITH 10 GIFS
     // FUNCTION runGiphy
-    function runGiphy(buttonValue) {
+    function runGiphy() {
+      var buttonValue = $(this).html();
 
       //Empties out the the gifs that were already loaded
       $("#city").empty(); // empties out the html
-
 
       // query set to search for CITY + API key + limit to 10 responses
       var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
@@ -105,41 +111,91 @@
         })
         //Promise from the Giphy
         .then(function (response) {
-          console.log(response);
+
           //creating a variable from the API response
           results = response.data;
-          console.log(results);
+
           // Looping through each result item (REQUESTED 10 ITEMS)
           for (var i = 0; i < results.length; i++) {
 
+            // Creating a DIV to hold the GIFS
             var cityDiv = $("<div>");
+            
+            // Adding a class to the cityDiv to target it with animation and pause
+            cityDiv.addClass("change");
+            $("#city").append(cityDiv);
 
-            // Creating a paragraph tag with the result item's rating
+
+
+            // Creating a paragraph tag with the Gif's rating
             var p = $("<p>").text("Rating: " + results[i].rating);
-
-            // Creating and storing an image tag
-            var cityStillImage = $("<img>");
-            // Setting the src attribute of the image to a property pulled off the result item
-            cityStillImage.attr("src", results[i].images.fixed_height_still.url);
-
             // Appending the paragraph and image tag to the cityDiv
             cityDiv.append(p);
-            cityDiv.append(cityStillImage);
-            console.log(cityDiv);
-            // Prependng the cityDiv to the HTML page in the "#city" div
-            $("#city").prepend(cityDiv);
 
-            //ANIMATE THE GIF
-            $(document).on("click", "img", function () {
-              console.log("click");
-              var cityAnimateImage = $("<img>");
-              cityAnimateImage.attr("src", results.images.fixed_height.url);
-              cityDiv.append(cityAnimateImage);
-            })
+            // Creating an image tag
+            var cityStillImage = $("<img>");
+
+            // Setting the src attribute of the image to a property pulled off the result item
+            cityStillImage.attr("src", results[i].images.fixed_height_still.url);
+            cityStillImage.attr("data-still", results[i].images.fixed_height_still.url);
+            cityStillImage.attr("data-animate", results[i].images.fixed_height.url);
+            cityStillImage.attr("data-state", "still");
+            cityDiv.append(cityStillImage);
+
           }
         })
+    }
 
-    } 
+    //ANIMATES THE GIF ON CLICK
+    // FUNCTION animateCityGif
+    function animateCityGif() {
+
+      var state = $(this).attr("data-state");
+
+      if (state === "still") {
+        //return all img elements that are descendants of 'this'
+        //   $(this).find("img").attr("src", $(this).find("img").attr("data-animate"));
+        //   $(this).find("img").attr("data-state", "animate");
+
+        // } else {
+        //   //return all img elements that are descendants of 'this'
+        //   $(this).find("img").attr("src", $(this).find("img").attr("data-still"));
+        //   $(this).find("img").attr("data-state", "still");
+
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+      }
+    }
+
+
+    
+    //ADDS A GIF BUTTON USING SUBMIT FORM
+    // FUNCTION addAGif
+    function addAGif() {
+      event.preventDefault();
+
+      var newCityToArray = $("input[type='text']").val().trim();
+
+      $("#cityArray").append("<button type='button' class='btn btn-primary'>" + newCityToArray + "</button>");
+      $("#addcity[type='text']").val("");
+    }
+
+    
+    
+    
+    //FUNCTION ".each" populates the DOM with the Array buttons
+    // For each city in the array, creating a button
+    $.each(cityGiphyArray, function (i, val) {
+      var cityArrayButton = $("<button type='button' class='btn btn-primary'>");
+
+      cityArrayButton.text(cityGiphyArray[i]);
+
+      // Writing the button name on the DOM
+      $("#cityArray").append(cityArrayButton);
+    })
   </script>
 </body>
 
@@ -147,4 +203,3 @@
 
 
 <!-- API key for Giphy: 5buFvdZ3WSNHFzbFytMWBbjytoPx7bbD -->
-<!-- //  .val() is used to get value from an input -->

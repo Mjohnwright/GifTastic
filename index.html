@@ -19,6 +19,15 @@
 
   }
 
+#cityArray, #city-form, {
+  margin-top: 30px;
+  margin-left:20px; 
+}
+
+#city {
+  margin-left: 20px;
+}
+
   body {
     margin-left: 10px;
   }
@@ -28,9 +37,8 @@
 
 
 <body>
-  <div id="cityArray">
-
-  </div>
+  <br>
+  <div id="cityArray"></div>
 
   <br>
 
@@ -43,9 +51,7 @@
   </form>
 
 
-  <div id="city">
-
-  </div>
+  <div id="city"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -87,8 +93,6 @@
 
 
 
-
-
     /* *******************************
              FUNCTIONS               
      ********************************* */
@@ -114,6 +118,7 @@
 
           //creating a variable from the API response
           results = response.data;
+          console.log(results);
 
           // Looping through each result item (REQUESTED 10 ITEMS)
           for (var i = 0; i < results.length; i++) {

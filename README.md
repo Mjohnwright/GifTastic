@@ -10,6 +10,9 @@ This is fun app that uses HTML, CSS and Jquery to run API make a dynamic web pag
 2.  To turn up the fun, users can click on each Gif to animnate it.
 3.  As if it could not get any more awesome, users can also add their own cities!
 
+### Link to App
+* <strong>[GifTastic](https://mjohnwright.github.io/GifTastic/)</strong>
+
 ### Screenshot
 ![Full Size](assets/images/ss.png)
 
